@@ -9,31 +9,55 @@ import SwiftUI
 
 struct ContentView: View {
     var user: User = User.sample
+    @State var isNotchDevice = false
     var body: some View {
-        TabView {
-            CarListView(user: user)
-                .tabItem {
-                    VStack {
-                        Image(systemName: "car")
-                        Text("My Cars")
-                    }
+        ZStack {
+            GeometryReader { geometry in
+                TabView {
+                    CarListView(user: user)
+                        .tabItem {
+                            VStack {
+                                Image(systemName: "car")
+                                Text("My Cars")
+                            }
+                        }
+                    
+                    FuelListView(user: user)
+                        .tabItem {
+                            VStack {
+                                Image(systemName: "fuelpump")
+                                Text("Fuel Records")
+                            }
+                        }
+                    
+                    ProfileView(user: user)
+                        .tabItem {
+                            VStack {
+                                Image(systemName: "person")
+                                Text("Profile")
+                            }
+                        }
+                }.onAppear {
+                    // iPhone 12's safearea is 44 pt
+                    isNotchDevice = geometry.safeAreaInsets.top > 40
                 }
-            FuelListView(user: user)
-                .tabItem {
+                
+                if isNotchDevice {
                     VStack {
-                        Image(systemName: "fuelpump")
-                        Text("Fuel Records")
+                        //FIXME: Not using HStack to centralize Text
+                        HStack {
+                            Spacer()
+                            Text("🦄🦄🦄")
+                            Spacer()
+                        }.frame(maxHeight: 40)
+                        Spacer()
                     }
+                    .edgesIgnoringSafeArea(.all)
                 }
-            
-            ProfileView(user: user)
-                .tabItem {
-                    VStack {
-                        Image(systemName: "person")
-                        Text("Profile")
-                    }
-                }
+                
+            }
         }
+        
     }
 }
 
